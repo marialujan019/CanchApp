@@ -1,7 +1,9 @@
 const express = require('express');
 const knex = require('knex');
 const bodyParser = require('body-parser');
-const register = require('./controladores/registro');
+const registroEndpoint = require('./controladores/registro');
+const ingresoEndpoint = require('./controladores/ingreso');
+const complejoEndpoint = require('./controladores/complejo');
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
 
@@ -21,6 +23,7 @@ const db = knex({
 app.use(cors());
 
 app.use(bodyParser.json());
+
 app.get('/', (req, res)=> {
     res.send('Hola')
 })
@@ -39,21 +42,19 @@ app.get('/hora', async (req, res)=> {
 })
 
 app.post('/registro', async (req, res)=>{
-  //TODO: cuando tengamos el modelado de la db mover al controler y validar la data.
-  const data = req.body
-  if(!data){
-      res.status(400).json({"message":http.STATUS_CODES[400]})
-      return;
-  }
-  try {
-      await db("registro").insert(data)
-      res.status(200).json({"message":"Created","data":data})
-  } catch (error) {
-      res.status(500).send({message:http.STATUS_CODES[500]})
-  }
+  registroEndpoint.registroEndpoint(req, res, db, bcrypt);
 })
 
-//app.post('/ingreso', signin.handleSignin(db))
+app.post('/ingreso', async (req, res) => {
+  ingresoEndpoint.ingresoEndpoint(req, res, db, bcrypt);
+}
+)
+
+app.post('/complejo', async (req, res) =>{
+  complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
+})
+
+
 
 app.listen(3000)
 console.log('Server on port', 3000)

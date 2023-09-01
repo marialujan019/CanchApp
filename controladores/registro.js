@@ -3,8 +3,8 @@ const http = require('http');
 async function registroEndpoint(req, res, db, bcrypt) {
   
     const data = req.body;
-    const {nombre, apellido, mail, pass, fnac, telefono} = data;
-
+    const {nombre, apellido, mail, pass, fnac, telefono, sexo, tipo} = data;
+    console.log(data)
 
     if(isAValidBody(data, res)) {
       bcrypt.hash(data.pass, 5, async (err, hash) => {
@@ -141,6 +141,7 @@ function isValidPhone(telefono){
 }
 
 async function jugadorExiste(mail, db) {
+  console.log('jugadorExiste')
   const result = await db.select('mail').from('loginJugador').where('mail','=', mail);
   const jugadorExiste = result.length > 0;
   return jugadorExiste;

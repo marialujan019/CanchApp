@@ -2,11 +2,11 @@ const express = require('express');
 const knex = require('knex');
 const bodyParser = require('body-parser');
 const registroEndpoint = require('./controladores/registro');
-const ingresoEndpoint = require('./controladores/ingreso');
 const complejoEndpoint = require('./controladores/complejo');
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
-
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const app = express()
 
 //Conexión a la db
@@ -19,13 +19,32 @@ const db = knex({
     }
   });
 
-
-app.use(cors());
+  app.use(cookieParser());
+  app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["POST", "GET"],
+    credentials: true
+}))
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res)=> {
-    res.send('Hola')
+const verifyUser = (req, res, next)=> {
+  const token = req.cookies.token
+  if(!token){
+    return res.json({Message: "Need token"})
+  } else {
+    jwt.verify(token, 'our-jsonwebtoken-secret-key', (err, decoded)=> {
+      if(err) {
+        return res.json({Message: "Auth error"})
+      } else {
+        req.name = decoded.name; 
+        next();
+      }
+    })
+  }
+}
+app.get('/', verifyUser, (req, res)=> {
+    return res.json({Status: "Respuesta ok"})
 })
 
 //Pegada de prueba para ver si funciona la conexion a la db
@@ -46,15 +65,34 @@ app.post('/registro', async (req, res)=>{
 })
 
 app.post('/ingreso', async (req, res) => {
-  ingresoEndpoint.ingresoEndpoint(req, res, db, bcrypt);
-}
-)
+  const { mail, pass } = req.body;
+  console.log(req.body)
+  const userData = await db.select('mail', 'pass').from('loginJugador').where('mail', '=', mail);
+  console.log(userData)
+  const isValid = bcrypt.compareSync(pass, userData[0].pass);
 
+  if (userData.length > 0 && isValid) {
+      const playerData = await db.select('*').from('jugador').where('mail', '=', mail);
+      const name = playerData[0].nombre
+      const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
+      res.cookie('token', token)
+      console.log(playerData[0].nombre)
+      return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
+  } else {
+      return res.json({Message: 'wrong credentials'});
+  }
+})
+
+app.get('/logout', (req, res)=> {
+  res.clearCookie('token');
+  return res.json({Status: "Respuesta ok"})
+
+})
 app.post('/complejo', async (req, res) =>{
   complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
 })
 
 
 
-app.listen(3000)
+app.listen(3001)
 console.log('Server on port', 3000)

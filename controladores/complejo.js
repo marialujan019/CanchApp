@@ -29,7 +29,8 @@ async function complejoEndpoint(req, res, bcrypt, db) {
                 //TODO: cambiar la bbdd a login -> aca poner el tipo admin o jugador
                 await db("loginJugador").insert({
                   mail: mail,
-                  pass: hash
+                  pass: hash,
+                  tipo: "administrador"
                 });
                 res.status(200).json({ "message": "Created", "data": data });
             } catch (error) {

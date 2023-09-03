@@ -88,6 +88,7 @@ app.get('/logout', (req, res)=> {
   return res.json({Status: "Respuesta ok"})
 
 })
+
 app.post('/complejo', async (req, res) =>{
   complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
 })

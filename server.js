@@ -67,17 +67,26 @@ app.post('/registro', async (req, res)=>{
 app.post('/ingreso', async (req, res) => {
   const { mail, pass } = req.body;
   console.log(req.body)
-  const userData = await db.select('mail', 'pass').from('loginJugador').where('mail', '=', mail);
+  const userData = await db.select('mail', 'pass', 'tipo').from('loginJugador').where('mail', '=', mail);
   console.log(userData)
   const isValid = bcrypt.compareSync(pass, userData[0].pass);
 
   if (userData.length > 0 && isValid) {
-      const playerData = await db.select('*').from('jugador').where('mail', '=', mail);
-      const name = playerData[0].nombre
-      const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
-      res.cookie('token', token)
-      console.log(playerData[0].nombre)
-      return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
+    var tipo = userData[0].tipo
+    if( tipo === "jugador") {
+        const playerData = await db.select('*').from('jugador').where('mail', '=', mail);
+        const name = playerData[0].nombre
+        const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
+        res.cookie('token', token)
+        return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
+      }
+      if(tipo === "administrador") {
+        const playerData = await db.select('*').from('administrador').where('mail', '=', mail);
+        const name = playerData[0].nombre
+        const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
+        res.cookie('token', token)
+        return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
+      }
   } else {
       return res.json({Message: 'wrong credentials'});
   }
@@ -88,6 +97,7 @@ app.get('/logout', (req, res)=> {
   return res.json({Status: "Respuesta ok"})
 
 })
+
 app.post('/complejo', async (req, res) =>{
   complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
 })

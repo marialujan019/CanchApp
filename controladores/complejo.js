@@ -1,29 +1,41 @@
+const http = require('http');
+
 async function complejoEndpoint(req, res, bcrypt, db) {
     const data = req.body;
+    var complejo = data.complejo
+    var administrador = data.administrador
+    const mail = administrador.mail
 
-    if(isAValidBody(data, res)){
-        bcrypt.hash(data.pass, 5, async (err, hash) => {
+    if(isAValidComplejo(complejo, res) && isValidAdmin(administrador, res)){
+        bcrypt.hash(administrador.pass, 5, async (err, hash) => {
             if (err) {
               console.error('Error al generar el hash de la contraseña:', err);
               return;
             }
             // Guardar el hash en una variable
             const hashedPassword = hash;
-            data.pass = hashedPassword;
-            const complejoYaExiste = await complejoExiste(data.mail, db);
+            administrador.pass = hashedPassword;
+            const complejoYaExiste = await complejoExiste(administrador.mail, db);
             if (complejoYaExiste) {
               console.log('El complejo ya está registrado en la base de datos.');
               res.status(400).send({ "message": "El complejo ya esta registrado"}); // O lanzar un error, dependiendo de tus necesidades
             } else {
               try {
-              await db("complejo").insert(data);
-              await db("login").insert({
-                mail: mail,
-                pass: hash
-              });
-              res.status(200).json({ "message": "Created", "data": data });
+                console.log(complejo)
+                await db("complejo").insert(complejo);
+                console.log("complejooooo")
+                await db("administrador").insert(administrador);
+                console.log("administradooooor")
+                //TODO: cambiar la bbdd a login -> aca poner el tipo admin o jugador
+                await db("loginJugador").insert({
+                  mail: mail,
+                  pass: hash,
+                  tipo: "administrador"
+                });
+                res.status(200).json({ "message": "Created", "data": data });
             } catch (error) {
-              res.status(500).send({ message: http.STATUS_CODES[500] });
+              console.log(error)
+                res.status(500).send({ message: http.STATUS_CODES[500] });
             }}
               
             }
@@ -32,10 +44,41 @@ async function complejoEndpoint(req, res, bcrypt, db) {
     }
 }
 
-function isAValidBody(data, res) {
-  const {nombre, apellido, razonSocial, mail, pass, direccion, telefono } = data;
+function isAValidComplejo(complejo, res) {
+  const {nombreComplejo, cuit, ciudad, direccion, telefonoComplejo} = complejo
 
-  if (!data) {
+  if (!complejo) {
+    res.status(400).json({ "message": http.STATUS_CODES[400] });
+    return;
+  }
+
+  if(!isValidString(nombreComplejo)) {
+    res.status(400).json({ "message": "no es un nombre valido" });
+  }
+
+  if(!isValidPhone(cuit)) {
+    res.status(400).json({ "message": "no es una razon social valida" });
+  }
+
+  if(!isValidString(ciudad)) {
+    res.status(400).json({ "message": "no es un nombre valido" });
+  }
+
+  if(!isValidDirection(direccion)){
+    res.status(400).json({ "message": "no es una direccion valida" });
+  }
+
+  if(!isValidPhone(telefonoComplejo)) {
+    res.status(400).json({ "message": "no es un telefono valido" });
+  }
+
+  return nombreComplejo && cuit && ciudad && direccion && telefonoComplejo;
+}
+
+function isValidAdmin(administrador, res) {
+  const {nombre, apellido, mail, pass, telefono} = administrador
+
+  if (!administrador) {
     res.status(400).json({ "message": http.STATUS_CODES[400] });
     return;
   }
@@ -48,10 +91,6 @@ function isAValidBody(data, res) {
     res.status(400).json({ "message": "no es un apellido valido" });
   }
 
-  if(!isValidString(razonSocial)) {
-    res.status(400).json({ "message": "no es una razon social valida" });
-  }
-
   if(!isAValidMail(mail)) {
     res.status(400).json({ "message": "no es un mail valido" });
   }
@@ -60,15 +99,11 @@ function isAValidBody(data, res) {
     res.status(400).json({ "message": "no es una contrasena valida" });
   }
 
-  if(!isValidDirection(direccion)){
-    res.status(400).json({ "message": "no es una direccion valida" });
-  }
-
   if(!isValidPhone(telefono)) {
     res.status(400).json({ "message": "no es un telefono valido" });
   }
 
-  return nombre && apellido && razonSocial && mail && pass && direccion && telefono;
+  return nombre && apellido && mail && pass && telefono;
 }
 
 function isValidString(str) {
@@ -163,9 +198,10 @@ function isValidDirection(str){
 }
 
 async function complejoExiste(mail, db) {
-    console.log("viendo si el mail ya esta registrado.. ");
     const result = await db.select('mail').from('loginJugador').where('mail','=', mail);
     const jugadorExiste = result.length > 0;
+    console.log(mail)
+    console.log(jugadorExiste)
     return jugadorExiste;
   }
 

@@ -25,7 +25,8 @@ async function registroEndpoint(req, res, db, bcrypt) {
           await db("jugador").insert(data);
           await db("loginJugador").insert({
             mail: mail,
-            pass: hash
+            pass: hash,
+            tipo: "jugador"
           });
           console.log("Jugador registrado");
           res.status(200).json({ "message": "Created", "data": data });

@@ -1,26 +1,23 @@
 const express = require('express');
 const knex = require('knex');
 const bodyParser = require('body-parser');
-const registroEndpoint = require('./controladores/registro');
+const registroEndpoint = require('./controladores/jugador/registro');
+const ingresoEndpoint = require('./controladores/jugador/ingreso')
 const complejoEndpoint = require('./controladores/complejo');
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const app = express()
+const { createClient } = require('@supabase/supabase-js');
+const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
 //Conexión a la db
-const db = knex({
-    client: 'pg',
-    connection: {
-      //cambiar por el internal url
-      connectionString: "postgres://mlujan:FvbE9Y3CEpdnL5PdO7JLEkoEcMLtVmx1@dpg-ciq6hbunqql4qa4911eg-a.oregon-postgres.render.com/canchappdb",
-      ssl: true,
-    }
-  });
+const db = createClient(supabaseUrl, supabaseKey);
 
-  app.use(cookieParser());
-  app.use(cors({
+app.use(cookieParser());
+
+app.use(cors({
     origin: ["http://localhost:3000"],
     methods: ["POST", "GET"],
     credentials: true
@@ -43,21 +40,9 @@ const verifyUser = (req, res, next)=> {
     })
   }
 }
+
 app.get('/', verifyUser, (req, res)=> {
     return res.json({Status: "Respuesta ok"})
-})
-
-//Pegada de prueba para ver si funciona la conexion a la db
-app.get('/hora', async (req, res)=> {
-    db.raw('SELECT NOW()')
-    .then(result => {
-    res.send(result.rows[0].now); // Imprimir el resultado de NOW()
-
-    })
-    .catch(error => {
-    console.error(error);
-   
-  });
 })
 
 app.post('/registro', async (req, res)=>{
@@ -65,31 +50,7 @@ app.post('/registro', async (req, res)=>{
 })
 
 app.post('/ingreso', async (req, res) => {
-  const { mail, pass } = req.body;
-  console.log(req.body)
-  const userData = await db.select('mail', 'pass', 'tipo').from('loginJugador').where('mail', '=', mail);
-  console.log(userData)
-  const isValid = bcrypt.compareSync(pass, userData[0].pass);
-
-  if (userData.length > 0 && isValid) {
-    var tipo = userData[0].tipo
-    if( tipo === "jugador") {
-        const playerData = await db.select('*').from('jugador').where('mail', '=', mail);
-        const name = playerData[0].nombre
-        const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
-        res.cookie('token', token)
-        return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
-      }
-      if(tipo === "administrador") {
-        const playerData = await db.select('*').from('administrador').where('mail', '=', mail);
-        const name = playerData[0].nombre
-        const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '1d'});
-        res.cookie('token', token)
-        return res.json({Status: "Respuesta ok", nombre: playerData[0].nombre})
-      }
-  } else {
-      return res.json({Message: 'wrong credentials'});
-  }
+  ingresoEndpoint.ingresoEndpoint(req, res, db, bcrypt);
 })
 
 app.get('/logout', (req, res)=> {

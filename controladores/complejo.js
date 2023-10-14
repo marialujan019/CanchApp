@@ -7,31 +7,57 @@ async function complejoEndpoint(req, res, bcrypt, db) {
     const mail = administrador.mail
 
     if(isAValidComplejo(complejo, res) && isValidAdmin(administrador, res)){
-        bcrypt.hash(administrador.pass, 5, async (err, hash) => {
+        bcrypt.hash(administrador.contrasena, 5, async (err, hash) => {
             if (err) {
               console.error('Error al generar el hash de la contraseña:', err);
               return;
             }
             // Guardar el hash en una variable
             const hashedPassword = hash;
-            administrador.pass = hashedPassword;
+            administrador.contrasena = hashedPassword;
             const complejoYaExiste = await complejoExiste(administrador.mail, db);
             if (complejoYaExiste) {
               console.log('El complejo ya está registrado en la base de datos.');
               res.status(400).send({ "message": "El complejo ya esta registrado"}); // O lanzar un error, dependiendo de tus necesidades
             } else {
               try {
-                console.log(complejo)
-                await db("complejo").insert(complejo);
-                console.log("complejooooo")
-                await db("administrador").insert(administrador);
-                console.log("administradooooor")
-                //TODO: cambiar la bbdd a login -> aca poner el tipo admin o jugador
-                await db("loginJugador").insert({
-                  mail: mail,
-                  pass: hash,
-                  tipo: "administrador"
-                });
+
+                const {admin, errorAdmin} = await db
+                .from('administrador')
+                .upsert([{
+                  nombre: administrador.nombre,
+                  apellido: administrador.apellido,
+                  telefono: administrador.telefono,
+                  mail: administrador.mail,
+                  contrasena: hash
+                }]);
+
+                const {login, error} = await db
+                  .from('login')
+                  .upsert([
+                    {
+                      mail: administrador.mail,
+                      contrasena: hash,
+                      tipo: "administrador"
+                    }
+                  ]);
+                
+                  console.log(administrador.mail)
+
+                const {data, errorAdmin2} = await db.from('administrador').select('*').eq('mail', administrador.mail).single();
+
+                console.log(data)
+
+                const {complejoData, errorComplejo} = await db.from("complejo").upsert([{
+                  nombre_complejo: complejo.nombreComplejo,
+                  telefono: complejo.telefonoComplejo,
+                  direccion: complejo.direccion,
+                  cant_canchas: null,
+                  ciudad: complejo.ciudad,
+                  cuit: complejo.cuit,
+                  id_admin: data.id_admin
+                }]);
+
                 res.status(200).json({ "message": "Created", "data": data });
             } catch (error) {
               console.log(error)
@@ -76,7 +102,7 @@ function isAValidComplejo(complejo, res) {
 }
 
 function isValidAdmin(administrador, res) {
-  const {nombre, apellido, mail, pass, telefono} = administrador
+  const {nombre, apellido, mail, contrasena, telefono} = administrador
 
   if (!administrador) {
     res.status(400).json({ "message": http.STATUS_CODES[400] });
@@ -95,7 +121,7 @@ function isValidAdmin(administrador, res) {
     res.status(400).json({ "message": "no es un mail valido" });
   }
 
-  if(!isValidPass(pass)) {
+  if(!isValidPass(contrasena)) {
     res.status(400).json({ "message": "no es una contrasena valida" });
   }
 
@@ -103,7 +129,7 @@ function isValidAdmin(administrador, res) {
     res.status(400).json({ "message": "no es un telefono valido" });
   }
 
-  return nombre && apellido && mail && pass && telefono;
+  return nombre && apellido && mail && contrasena && telefono;
 }
 
 function isValidString(str) {
@@ -137,7 +163,7 @@ function isAValidMail(mail) {
   return regex.test(mail);
 }
 
-function isValidPass(pass) {
+function isValidPass(contrasena) {
   // Expresión regular para verificar si la contraseña contiene al menos una letra mayúscula
   const regexMayuscula = /[A-Z]/;
 
@@ -147,21 +173,21 @@ function isValidPass(pass) {
   const regexNumero = /[0-9]/;
 
   // Verificar la longitud de la contraseña (mínimo 8, máximo 20 caracteres)
-  if (pass.length < 8 || pass.length > 20) {
+  if (contrasena.length < 8 || contrasena.length > 20) {
     return false;
   }
 
   // Verificar si la contraseña contiene al menos una letra mayúscula
-  if (!regexMayuscula.test(pass)) {
+  if (!regexMayuscula.test(contrasena)) {
     return false;
   }
 
-  if (!regexMin.test(pass)) {
+  if (!regexMin.test(contrasena)) {
     return false;
   }
 
   // Verificar si la contraseña contiene al menos un número
-  if (!regexNumero.test(pass)) {
+  if (!regexNumero.test(contrasena)) {
     return false;
   }
 
@@ -198,12 +224,14 @@ function isValidDirection(str){
 }
 
 async function complejoExiste(mail, db) {
-    const result = await db.select('mail').from('loginJugador').where('mail','=', mail);
-    const jugadorExiste = result.length > 0;
-    console.log(mail)
-    console.log(jugadorExiste)
-    return jugadorExiste;
-  }
+  const result = await db
+  .from('login')
+  .select('mail')
+  .eq('mail', mail);
+
+  const jugadorExiste = result.data.length > 0;
+  return jugadorExiste;
+}
 
 module.exports = {
     complejoEndpoint: complejoEndpoint

@@ -4,11 +4,17 @@ const bodyParser = require('body-parser');
 const registroEndpoint = require('./controladores/jugador/registro');
 const ingresoEndpoint = require('./controladores/jugador/ingreso')
 const complejoEndpoint = require('./controladores/complejo');
+const canchasEndpoint = require('./controladores/canchas/search')
+const crearCanchaEndpoint = require('./controladores/canchas/crear')
+const canchaEndpoint = require('./controladores/canchas/cancha')
+
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
 const cookieParser = require('cookie-parser');
 const app = express()
+const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
+const perfilEndpoint = require('./controladores/perfil/perfil');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -45,8 +51,24 @@ app.get('/', verifyUser, (req, res)=> {
     return res.json({Status: "Respuesta ok"})
 })
 
+app.post('/search_canchas',  async (req, res) =>{
+  canchasEndpoint.canchasEndpoint(req, res, db);
+})
+
+app.post('/crear_cancha', async (req, res) => {
+  crearCanchaEndpoint.crearCanchaEndpoint(req, res, db);
+})
+
+app.post('/cancha', async (req, res) => {
+  canchaEndpoint.canchaEndpoint(req, res, db);
+})
+
 app.post('/registro', async (req, res)=>{
   registroEndpoint.registroEndpoint(req, res, db, bcrypt);
+})
+
+app.post('/perfil', async (req, res) => {
+  perfilEndpoint.perfilEndpoint(req, res, db, bcrypt)
 })
 
 app.post('/ingreso', async (req, res) => {

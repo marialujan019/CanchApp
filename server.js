@@ -7,6 +7,8 @@ const complejoEndpoint = require('./controladores/complejo');
 const canchasEndpoint = require('./controladores/canchas/search')
 const crearCanchaEndpoint = require('./controladores/canchas/crear')
 const canchaEndpoint = require('./controladores/canchas/cancha')
+const deleteCanchaEndpoint = require('./controladores/canchas/delete')
+const updateCanchaEndpoint = require('./controladores/canchas/editar')
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -25,7 +27,7 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: ["http://localhost:3000"],
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true
 }))
 
@@ -61,6 +63,14 @@ app.post('/crear_cancha', async (req, res) => {
 
 app.post('/cancha', async (req, res) => {
   canchaEndpoint.canchaEndpoint(req, res, db);
+})
+
+app.delete('/borrar_cancha/:id', async(req, res) => {
+  deleteCanchaEndpoint.deleteCanchaEndpoint(req, res, db);
+})
+
+app.put('/update_cancha/:id', async(req, res) => {
+  updateCanchaEndpoint.updateCanchaEndpoint(req, res, db);
 })
 
 app.post('/registro', async (req, res)=>{

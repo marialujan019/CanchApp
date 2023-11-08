@@ -6,7 +6,8 @@ async function cancha(req, res, db) {
     return res.json({ Status: 'Respuesta ok', 
                       nombre: cancha.data.nombre_cancha,
                       techo: cancha.data.techo,
-                      jugadores: cancha.data.cant_jugador})
+                      jugadores: cancha.data.cant_jugador,
+                      precio_turno: cancha.data.precio_turno})
 
 }
 

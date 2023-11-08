@@ -7,7 +7,8 @@ async function crear(req, res, db) {
         id_complejo: data.id_complejo,
         cant_jugador: data.cant_jugador,
         techo: techo,
-        nombre_cancha: data.nombre_cancha
+        nombre_cancha: data.nombre_cancha,
+        precio_turno: data.precio_turno
     }]);
 }
 

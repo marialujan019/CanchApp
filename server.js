@@ -10,6 +10,7 @@ const canchaEndpoint = require('./controladores/canchas/cancha')
 const deleteCanchaEndpoint = require('./controladores/canchas/delete')
 const updateCanchaEndpoint = require('./controladores/canchas/editar')
 const crearAgendaEndpoint = require('./controladores/agenda/crear_agenda')
+const crearEquipoEndpoint = require('./controladores/equipo/crear')
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -98,6 +99,11 @@ app.post('/complejo', async (req, res) =>{
 
 app.post('/crear_agenda', async(req, res) => {
   crearAgendaEndpoint.crearAgendaEndpoint(req, res, db);
+})
+
+//Equipo
+app.post('/crear_equipo', async(req, res) => {
+  crearEquipoEndpoint.crearEquipoEndpoint(req, res, db)
 })
 
 app.listen(3001)

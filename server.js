@@ -15,6 +15,11 @@ const complejoCanchas  = require('./controladores/complejo/canchas');
 const complejo = require('./controladores/complejo/search');
 const crearSolicitud = require('./controladores/solicitudes/crear');
 const crearInvitaciones = require('./controladores/invitaciones/crear');
+const misEquipos = require('./controladores/equipo/equipos_jugador');
+const popups = require('./controladores/mapa/popups');
+const historial = require('./controladores/reservas/historial');
+const jugadoresEquipo = require('./controladores/equipo/jugadores');
+const jugadores = require('./controladores/jugador/jugadores');
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -121,6 +126,14 @@ app.post('/crear_equipo', async(req, res) => {
   crearEquipoEndpoint.crearEquipoEndpoint(req, res, db)
 })
 
+app.get('/equipo/mis_equipos/:id', async(req, res) => {
+  misEquipos.misEquipos(req, res, db)
+})
+
+app.get('/equipo/jugadores/:id', async(req, res) => {
+  jugadoresEquipo.jugadoresEquipo(req, res, db)
+})
+
 //solicitudes
 app.post('/solicitudes', async(req, res) => {
   crearSolicitud.solicitudesEndpoint(req, res, db)
@@ -129,6 +142,21 @@ app.post('/solicitudes', async(req, res) => {
 //invitaciones
 app.post('/invitaciones', async(req, res) => {
   crearInvitaciones.invitacionesEndpoint(req, res, db)
+})
+
+//Mapa
+app.get('/popups', async(req, res) => {
+  popups.popups(req, res, db)
+})
+
+//reservas
+app.get('/reservas/historial/:id', async(req, res) => {
+  historial.historial(req, res, db)
+})
+
+//jugadores
+app.get('/jugadores/all', async(req, res) => {
+  jugadores.jugadores(req, res, db)
 })
 
 app.listen(3001)

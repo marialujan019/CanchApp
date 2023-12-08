@@ -55,7 +55,9 @@ async function complejoEndpoint(req, res, bcrypt, db) {
                   cant_canchas: null,
                   ciudad: complejo.ciudad,
                   cuit: complejo.cuit,
-                  id_admin: data.id_admin
+                  id_admin: data.id_admin,
+                  longitud: complejo.longitud,
+                  latitud: complejo.latitud
                 }]);
 
                 res.status(200).json({ "message": "Created", "data": data });

@@ -9,6 +9,17 @@ const crearCanchaEndpoint = require('./controladores/canchas/crear')
 const canchaEndpoint = require('./controladores/canchas/cancha')
 const deleteCanchaEndpoint = require('./controladores/canchas/delete')
 const updateCanchaEndpoint = require('./controladores/canchas/editar')
+const crearAgendaEndpoint = require('./controladores/agenda/crear_agenda')
+const crearEquipoEndpoint = require('./controladores/equipo/crear')
+const complejoCanchas  = require('./controladores/complejo/canchas');
+const complejo = require('./controladores/complejo/search');
+const crearSolicitud = require('./controladores/solicitudes/crear');
+const crearInvitaciones = require('./controladores/invitaciones/crear');
+const misEquipos = require('./controladores/equipo/equipos_jugador');
+const popups = require('./controladores/mapa/popups');
+const historial = require('./controladores/reservas/historial');
+const jugadoresEquipo = require('./controladores/equipo/jugadores');
+const jugadores = require('./controladores/jugador/jugadores');
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -33,6 +44,7 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
+//Generales de usuarios
 const verifyUser = (req, res, next)=> {
   const token = req.cookies.token
   if(!token){
@@ -53,6 +65,25 @@ app.get('/', verifyUser, (req, res)=> {
     return res.json({Status: "Respuesta ok"})
 })
 
+app.post('/registro', async (req, res)=>{
+  registroEndpoint.registroEndpoint(req, res, db, bcrypt);
+})
+
+app.post('/perfil', async (req, res) => {
+  perfilEndpoint.perfilEndpoint(req, res, db, bcrypt)
+})
+
+app.post('/ingreso', async (req, res) => {
+  ingresoEndpoint.ingresoEndpoint(req, res, db, bcrypt);
+})
+
+app.get('/logout', (req, res)=> {
+  res.clearCookie('token');
+  return res.json({Status: "Respuesta ok"})
+
+})
+
+//Canchas
 app.post('/search_canchas',  async (req, res) =>{
   canchasEndpoint.canchasEndpoint(req, res, db);
 })
@@ -73,29 +104,60 @@ app.put('/update_cancha/:id', async(req, res) => {
   updateCanchaEndpoint.updateCanchaEndpoint(req, res, db);
 })
 
-app.post('/registro', async (req, res)=>{
-  registroEndpoint.registroEndpoint(req, res, db, bcrypt);
-})
-
-app.post('/perfil', async (req, res) => {
-  perfilEndpoint.perfilEndpoint(req, res, db, bcrypt)
-})
-
-app.post('/ingreso', async (req, res) => {
-  ingresoEndpoint.ingresoEndpoint(req, res, db, bcrypt);
-})
-
-app.get('/logout', (req, res)=> {
-  res.clearCookie('token');
-  return res.json({Status: "Respuesta ok"})
-
-})
-
+//Complejo
 app.post('/complejo', async (req, res) =>{
   complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
 })
 
+app.post('/complejo/agenda', async(req, res) => {
+  crearAgendaEndpoint.crearAgendaEndpoint(req, res, db);
+})
 
+app.get('/complejo/canchas/:id', async(req, res) => {
+  complejoCanchas.complejoCanchas(req, res, db)
+})
+
+app.get('/complejo/:id', async(req, res) => {
+  complejo.complejo(req, res, db)
+})
+
+//Equipo
+app.post('/crear_equipo', async(req, res) => {
+  crearEquipoEndpoint.crearEquipoEndpoint(req, res, db)
+})
+
+app.get('/equipo/mis_equipos/:id', async(req, res) => {
+  misEquipos.misEquipos(req, res, db)
+})
+
+app.get('/equipo/jugadores/:id', async(req, res) => {
+  jugadoresEquipo.jugadoresEquipo(req, res, db)
+})
+
+//solicitudes
+app.post('/solicitudes', async(req, res) => {
+  crearSolicitud.solicitudesEndpoint(req, res, db)
+})
+
+//invitaciones
+app.post('/invitaciones', async(req, res) => {
+  crearInvitaciones.invitacionesEndpoint(req, res, db)
+})
+
+//Mapa
+app.get('/popups', async(req, res) => {
+  popups.popups(req, res, db)
+})
+
+//reservas
+app.get('/reservas/historial/:id', async(req, res) => {
+  historial.historial(req, res, db)
+})
+
+//jugadores
+app.get('/jugadores/all', async(req, res) => {
+  jugadores.jugadores(req, res, db)
+})
 
 app.listen(3001)
 console.log('Server on port', 3000)

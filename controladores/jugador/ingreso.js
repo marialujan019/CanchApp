@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken');
 
 async function ingresoEndpoint(req, res, db, bcrypt) {
   const { mail, pass } = req.body;
+  console.log(req.body)
   const { data, error } = await db.from('login').select('*').eq('mail', mail).single();
+
+  console.log(data)
 
   const isValid = bcrypt.compareSync(pass, data.contrasena);
 

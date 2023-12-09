@@ -31,6 +31,8 @@ const app = express()
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
 const perfilEndpoint = require('./controladores/perfil/perfil');
+const reservar = require('./controladores/reservas/reservar');
+const update = require('./controladores/equipo/update');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -140,6 +142,10 @@ app.get('/equipo/mis_equipos/:id', async(req, res) => {
   misEquipos.misEquipos(req, res, db)
 })
 
+app.post('/equipo/update', async(req, res) => {
+  update.update(req, res, db)
+})
+
 app.get('/equipo/jugadores/:id', async(req, res) => {
   jugadoresEquipo.jugadoresEquipo(req, res, db)
 })
@@ -162,6 +168,10 @@ app.get('/popups', async(req, res) => {
 //reservas
 app.get('/reservas/historial/:id', async(req, res) => {
   historial.historial(req, res, db)
+})
+
+app.post('/reservar', async(req, res) => {
+  reservar.reservar(req, res, db)
 })
 
 //jugadores

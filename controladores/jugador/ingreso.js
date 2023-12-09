@@ -19,7 +19,7 @@ async function ingresoEndpoint(req, res, db, bcrypt) {
     }
 
     const name = result.data.nombre;
-    const id = result.data.id_admin;
+    const id = tipo === "jugador" ? result.data.id_jug : result.data.id_admin ;
 
     const token = jwt.sign({name}, 'our-jsonwebtoken-secret-key', {expiresIn: '100d'});
     res.cookie('token', token)

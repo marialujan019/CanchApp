@@ -17,10 +17,11 @@ async function turnosFecha(req, res, db){
       
       // Construir el objeto de salida
       const resultado = {
-        fecha_seleccionada: datosEntrada[0].fecha,
+        fecha_seleccionada: datosEntrada[0]?.fecha,
         horario_disponibilidad: datosOrganizados
       };
       
+      console.log("datos de entrada " + datosEntrada[0])
       console.log(resultado);
     return res.json(resultado);     
 }

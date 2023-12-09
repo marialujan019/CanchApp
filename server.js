@@ -20,6 +20,9 @@ const popups = require('./controladores/mapa/popups');
 const historial = require('./controladores/reservas/historial');
 const jugadoresEquipo = require('./controladores/equipo/jugadores');
 const jugadores = require('./controladores/jugador/jugadores');
+const turnos = require('./controladores/agenda/turnos');
+const turnosFecha = require('./controladores/agenda/turnos_fecha');
+
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -109,8 +112,15 @@ app.post('/complejo', async (req, res) =>{
   complejoEndpoint.complejoEndpoint(req, res, bcrypt, db);
 })
 
-app.post('/complejo/agenda', async(req, res) => {
+app.post('/complejo/agenda/crear', async(req, res) => {
   crearAgendaEndpoint.crearAgendaEndpoint(req, res, db);
+})
+
+app.get('/complejo/agenda/turnos/:id', async(req, res) => {
+  turnos.turnos(req, res, db);
+})
+app.get('/complejo/agenda/turnos/:id/:fecha', async(req, res) => {
+  turnosFecha.turnosFecha(req, res, db);
 })
 
 app.get('/complejo/canchas/:id', async(req, res) => {

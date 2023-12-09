@@ -40,8 +40,7 @@ async function crearAgenda(req, res, db) {
                 id_complejo: idComplejo,
                 fecha: currentDate,
                 hora: horaInicio1,
-                disponibilidad: 'Disponible',
-                id_jug: req.body.id_jug
+                disponibilidad: 'Disponible'
             }]);
             horaInicio1 = parseInt(horaInicio1) +1;
             console.log(horaInicio1)

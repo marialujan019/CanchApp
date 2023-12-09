@@ -1,15 +1,6 @@
 const { json } = require("body-parser");
 
 async function historial(req, res, db){
-    /*
-    {
-        "id_reserva": 1,
-        "nombre_complejo": "Complejo Deportivo A",
-        "nombre_cancha": "Cancha 1",
-        "fechaYHora": "2023-12-01 14:30:00",
-        "nombre_equipo": "Equipo A"
-      }*/
-      
     const equipos = await db.from('equipo').select('nombre_equipo, id_equipo').contains('id_jugadores', [req.params.id])
     const id_equipos = equipos.data.map(objeto => objeto.id_equipo);
 

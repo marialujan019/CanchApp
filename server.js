@@ -23,6 +23,7 @@ const jugadores = require('./controladores/jugador/jugadores');
 const turnos = require('./controladores/agenda/turnos');
 const turnosFecha = require('./controladores/agenda/turnos_fecha');
 
+
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
 const cookieParser = require('cookie-parser');

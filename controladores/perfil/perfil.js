@@ -9,6 +9,12 @@ async function perfilEndpoint(req, res, db, bcrypt) {
         console.log(admin)
         return res.json({ Status: 'Respuesta ok', nombre: data2.data.nombre_complejo, direccion: data2.data.direccion, telefono: data2.data.telefono, contrasena: admin.data.contrasena})
     }
+
+    if(data.tipo === "jugador") {
+      const data2 = await db.from('jugador').select('*').eq('id_jug', data.id).single();
+     
+      return res.json(data2.data)
+    }
 }
 
   module.exports = {

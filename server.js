@@ -194,7 +194,7 @@ app.post('/reservar', async(req, res) => {
 })
 
 //jugadores
-app.get('/jugadores/all', async(req, res) => {
+app.get('/jugadores/:id', async(req, res) => {
   jugadores.jugadores(req, res, db)
 })
 

@@ -22,7 +22,7 @@ const jugadoresEquipo = require('./controladores/equipo/jugadores');
 const jugadores = require('./controladores/jugador/jugadores');
 const turnos = require('./controladores/agenda/turnos');
 const turnosFecha = require('./controladores/agenda/turnos_fecha');
-
+const buscarEquipos = require('./controladores/busquedas/buscar_equipos');
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -33,6 +33,7 @@ const { createClient } = require('@supabase/supabase-js');
 const perfilEndpoint = require('./controladores/perfil/perfil');
 const reservar = require('./controladores/reservas/reservar');
 const update = require('./controladores/equipo/update');
+const deleteSolicitud = require('./controladores/solicitudes/delete');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -150,9 +151,17 @@ app.get('/equipo/jugadores/:id', async(req, res) => {
   jugadoresEquipo.jugadoresEquipo(req, res, db)
 })
 
+app.get('/equipo/buscar/:id_jugador', async(req, res) => {
+  buscarEquipos.buscarEquipos(req, res, db)
+})
+
 //solicitudes
 app.post('/solicitudes', async(req, res) => {
   crearSolicitud.solicitudesEndpoint(req, res, db)
+})
+
+app.delete('/solicitudes/borrar/:id_jugador/:id_equipo', async(req, res) => {
+  deleteSolicitud.deleteSolicitud(req, res, db)
 })
 
 //invitaciones

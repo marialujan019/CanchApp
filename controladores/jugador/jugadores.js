@@ -1,10 +1,13 @@
 async function jugadores(req, res, db){
-    const jugadores = await db.from('jugador').select('nombre, apellido, fecha_nac, telefono, posicion, pierna_habil, sexo')
+    const id_jugador = req.params.id
+    const jugadores = await db.from('jugador').select('id_jug, nombre, apellido, fecha_nac, telefono, posicion, pierna_habil, sexo')
     const jugadoresConEdad = jugadores.data.map(jugador => ({
         ...jugador,
         edad: calcularEdad(jugador.fecha_nac)
       }));
-    return res.json(jugadoresConEdad);    
+
+    const jugadoresTotales = jugadoresConEdad.filter((jugador) => jugador.id_jug !== parseInt(id_jugador))  
+    return res.json(jugadoresTotales);    
     
 }
 

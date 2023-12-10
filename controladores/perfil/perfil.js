@@ -14,6 +14,7 @@ async function perfilEndpoint(req, res, db, bcrypt) {
       const data2 = await db.from('jugador').select('*').eq('id_jug', data.id).single();
      
       return res.json({ Status: 'Respuesta ok', nombre: data2.data.nombre, telefono: data2.data.telefono, pierna_habil: data2.data.pierna_habil, posicion: data2.data.posicion})
+
     }
 }
 

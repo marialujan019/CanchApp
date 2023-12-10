@@ -34,6 +34,8 @@ const perfilEndpoint = require('./controladores/perfil/perfil');
 const reservar = require('./controladores/reservas/reservar');
 const update = require('./controladores/equipo/update');
 const deleteSolicitud = require('./controladores/solicitudes/delete');
+const soyCapitan = require('./controladores/equipo/soy_capitan');
+const noSoyCapitan = require('./controladores/equipo/no_soy_capitan');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -141,6 +143,14 @@ app.post('/crear_equipo', async(req, res) => {
 
 app.get('/equipo/mis_equipos/:id', async(req, res) => {
   misEquipos.misEquipos(req, res, db)
+})
+
+app.get('/equipo/soy_capitan/:id', async(req, res) => {
+  soyCapitan.soyCapitan(req, res, db)
+})
+
+app.get('/equipo/no_soy_capitan/:id', async(req, res) => {
+   noSoyCapitan.noSoyCapitan(req, res, db)
 })
 
 app.post('/equipo/update', async(req, res) => {

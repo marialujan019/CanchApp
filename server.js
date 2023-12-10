@@ -36,6 +36,7 @@ const update = require('./controladores/equipo/update');
 const deleteSolicitud = require('./controladores/solicitudes/delete');
 const soyCapitan = require('./controladores/equipo/soy_capitan');
 const noSoyCapitan = require('./controladores/equipo/no_soy_capitan');
+const eliminarJugador = require('./controladores/jugador/eliminar');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -196,6 +197,10 @@ app.post('/reservar', async(req, res) => {
 //jugadores
 app.get('/jugadores/:id', async(req, res) => {
   jugadores.jugadores(req, res, db)
+})
+
+app.post('/jugadores/:id/:equipo', async(req, res) => {
+  eliminarJugador.eliminarJugador(req, res, db)
 })
 
 app.listen(3001)

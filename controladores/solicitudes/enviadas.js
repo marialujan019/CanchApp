@@ -15,9 +15,10 @@ async function solicitudEnviada(req, res, db){
         ...dato,
         nombre_equipo: equipoData.find(nombre => nombre.id_equipo === dato.id_equipo).nombre_equipo
       }));
-    
+      
+      const filterEstado = responseEquipo.filter(item => item.estado == "Pendiente")
 
-    return res.json(responseEquipo)
+    return res.json(filterEstado)
 }
 
 

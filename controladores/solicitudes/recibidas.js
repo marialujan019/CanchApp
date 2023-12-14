@@ -1,7 +1,6 @@
 async function solicitudRecibida(req, res, db){
     
     const id_jugador = req.params.id;
-    console.log("ID JUGADORRRRRRR: " + id_jugador)
     const equipos = await db.from('equipo').select('id_equipo, nombre_equipo').contains('id_jugadores', [id_jugador])
     const equipoData = equipos.data
     const id_equipos = equipoData.map(objeto => objeto.id_equipo);
@@ -28,7 +27,9 @@ async function solicitudRecibida(req, res, db){
         nombre_equipo: equipoData.find(nombre => nombre.id_equipo === dato.id_equipo).nombre_equipo
       }));
    
-    return res.json(solicitudesRecibidas.filter(item => item.id_jugador !== parseInt(id_jugador)));
+      const filterJugador = solicitudesRecibidas.filter(item => item.id_jugador !== parseInt(id_jugador))
+      const filterEstado = filterJugador.filter(item => item.estado == "Pendiente")
+    return res.json(filterEstado);
     
 }
 

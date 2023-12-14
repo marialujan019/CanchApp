@@ -40,7 +40,11 @@ const eliminarJugador = require('./controladores/jugador/eliminar');
 const misReservas = require('./controladores/reservas/mis_reservas');
 const eliminarEquipo = require('./controladores/equipo/eliminar');
 const solicitudEnviada = require('./controladores/solicitudes/enviadas')
-const solicitudRecibida = require('./controladores/solicitudes/recibidas')
+const solicitudRecibida = require('./controladores/solicitudes/recibidas');
+const invitacionRecibida = require('./controladores/invitaciones/recibidas');
+const invitacionEnviada = require('./controladores/invitaciones/enviadas');
+const solicitudUpdate = require('./controladores/solicitudes/update')
+const invitacionesUpdate = require('./controladores/invitaciones/update')
 
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
@@ -192,10 +196,25 @@ app.get('/solicitudes/recibidas/:id', async(req, res) => {
   solicitudRecibida.solicitudRecibida(req, res, db)
 })
 
+app.post('/solicitudes/update', async(req, res) => {
+  solicitudUpdate.solicitudUpdate(req, res, db)
+})
 
 //invitaciones
 app.post('/invitaciones', async(req, res) => {
   crearInvitaciones.invitacionesEndpoint(req, res, db)
+})
+
+app.get('/invitaciones/recibidas/:id', async(req, res) => {
+  invitacionRecibida.invitacionRecibida(req, res, db)
+})
+
+app.get('/invitaciones/mis-invitaciones/:id', async(req, res) => {
+  invitacionEnviada.invitacionEnviada(req, res, db)
+})
+
+app.post('/invitaciones/update', async(req, res) => {
+  invitacionesUpdate.invitacionesUpdate(req, res, db)
 })
 
 //Mapa

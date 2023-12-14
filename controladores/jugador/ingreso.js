@@ -5,8 +5,9 @@ async function ingresoEndpoint(req, res, db, bcrypt) {
   console.log(req.body)
   const { data, error } = await db.from('login').select('*').eq('mail', mail).single();
 
-  console.log(data)
-
+  if (!data) {
+    return res.json({ Message: 'Mail incorrecto' });
+  }
   const isValid = bcrypt.compareSync(pass, data.contrasena);
 
   if (isValid) {   

@@ -45,7 +45,7 @@ const invitacionRecibida = require('./controladores/invitaciones/recibidas');
 const invitacionEnviada = require('./controladores/invitaciones/enviadas');
 const solicitudUpdate = require('./controladores/solicitudes/update')
 const invitacionesUpdate = require('./controladores/invitaciones/update')
-
+const buscarEquiposInvitar = require('./controladores/busquedas/buscar_equipo_invitar')
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -173,6 +173,10 @@ app.get('/equipo/jugadores/:id', async(req, res) => {
 
 app.get('/equipo/buscar/:id_jugador', async(req, res) => {
   buscarEquipos.buscarEquipos(req, res, db)
+})
+
+app.get('/equipo/buscar/:id_capitan/:id_jugador', async(req, res) => {
+  buscarEquiposInvitar.buscarEquiposInvitar(req, res, db)
 })
 
 app.delete('/equipo/borrar/:id', async(req, res) => {

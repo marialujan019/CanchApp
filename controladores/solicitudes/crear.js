@@ -5,9 +5,7 @@ async function crear(req, res, db) {
         const hasInvitationPending = await checkInvitation(data.id_jugador, data.id_equipo, db);
         const isPlayerInCurrentTeam = await checkPlayer(data.id_jugador, data.id_equipo, db);
         const hasSolitud = await checkPlayerSolicitud(data.id_jugador, data.id_equipo, db);
-        console.log("invitacion: " + hasInvitationPending)
-        console.log("same team: " + isPlayerInCurrentTeam)
-        console.log("ya tiene una solicitud: " + hasSolitud)
+        
         if(!hasInvitationPending && !isPlayerInCurrentTeam && !hasSolitud) {
             await db.from('solicitudes').upsert([
                 {

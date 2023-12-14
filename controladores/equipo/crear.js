@@ -7,7 +7,8 @@ async function crear(req, res, db) {
           nombre_equipo: data.nombre_equipo,
           cant_max: data.cant_max,
           capitan: data.capitan,
-          id_jugadores: data.id_jugadores
+          id_jugadores: data.id_jugadores,
+          publico: data.publico
         },
       ]);
       res.status(200).send({ "message": "equipo creado"});

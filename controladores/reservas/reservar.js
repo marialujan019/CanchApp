@@ -11,9 +11,6 @@ async function reservar(req, res, db){
     .update({ disponibilidad: 'pendiente', id_equipo: data.id_equipo })
     .eq('id_agenda', data.id_agenda);
 
-    console.log(jugadores.data);
-    return res.json(jugadores.data);
-
 }
 
 

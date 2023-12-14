@@ -37,7 +37,15 @@ const deleteSolicitud = require('./controladores/solicitudes/delete');
 const soyCapitan = require('./controladores/equipo/soy_capitan');
 const noSoyCapitan = require('./controladores/equipo/no_soy_capitan');
 const eliminarJugador = require('./controladores/jugador/eliminar');
-
+const misReservas = require('./controladores/reservas/mis_reservas');
+const eliminarEquipo = require('./controladores/equipo/eliminar');
+const solicitudEnviada = require('./controladores/solicitudes/enviadas')
+const solicitudRecibida = require('./controladores/solicitudes/recibidas');
+const invitacionRecibida = require('./controladores/invitaciones/recibidas');
+const invitacionEnviada = require('./controladores/invitaciones/enviadas');
+const solicitudUpdate = require('./controladores/solicitudes/update')
+const invitacionesUpdate = require('./controladores/invitaciones/update')
+const buscarEquiposInvitar = require('./controladores/busquedas/buscar_equipo_invitar')
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -167,6 +175,14 @@ app.get('/equipo/buscar/:id_jugador', async(req, res) => {
   buscarEquipos.buscarEquipos(req, res, db)
 })
 
+app.get('/equipo/buscar/:id_capitan/:id_jugador', async(req, res) => {
+  buscarEquiposInvitar.buscarEquiposInvitar(req, res, db)
+})
+
+app.delete('/equipo/borrar/:id', async(req, res) => {
+  eliminarEquipo.eliminarEquipo(req,res,db)
+})
+
 //solicitudes
 app.post('/solicitudes', async(req, res) => {
   crearSolicitud.solicitudesEndpoint(req, res, db)
@@ -176,9 +192,33 @@ app.delete('/solicitudes/borrar/:id_jugador/:id_equipo', async(req, res) => {
   deleteSolicitud.deleteSolicitud(req, res, db)
 })
 
+app.get('/solicitudes/mis-solicitudes/:id', async(req, res) => {
+  solicitudEnviada.solicitudEnviada(req, res, db)
+})
+
+app.get('/solicitudes/recibidas/:id', async(req, res) => {
+  solicitudRecibida.solicitudRecibida(req, res, db)
+})
+
+app.post('/solicitudes/update', async(req, res) => {
+  solicitudUpdate.solicitudUpdate(req, res, db)
+})
+
 //invitaciones
 app.post('/invitaciones', async(req, res) => {
   crearInvitaciones.invitacionesEndpoint(req, res, db)
+})
+
+app.get('/invitaciones/recibidas/:id', async(req, res) => {
+  invitacionRecibida.invitacionRecibida(req, res, db)
+})
+
+app.get('/invitaciones/mis-invitaciones/:id', async(req, res) => {
+  invitacionEnviada.invitacionEnviada(req, res, db)
+})
+
+app.post('/invitaciones/update', async(req, res) => {
+  invitacionesUpdate.invitacionesUpdate(req, res, db)
 })
 
 //Mapa
@@ -193,6 +233,10 @@ app.get('/reservas/historial/:id', async(req, res) => {
 
 app.post('/reservar', async(req, res) => {
   reservar.reservar(req, res, db)
+})
+
+app.get('/reservas/mis-reservas/:id', async(req, res) => {
+  misReservas.misReservas(req, res, db)
 })
 
 //jugadores

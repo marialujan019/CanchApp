@@ -1,7 +1,6 @@
 {
   "name": "canchapp-api",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
     "@supabase/supabase-js": "^2.38.1",
@@ -22,5 +21,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }

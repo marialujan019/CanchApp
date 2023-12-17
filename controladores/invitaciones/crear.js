@@ -5,10 +5,7 @@ async function crear(req, res, db) {
         const hasInvitationPending = await checkInvitation(data.id_jugador, data.id_equipo, db);
         const isPlayerInCurrentTeam = await checkPlayer(data.id_jugador, data.id_equipo, db);
         const hasSolitud = await checkPlayerSolicitud(data.id_jugador, data.id_equipo, db);
-
-        console.log(hasInvitationPending + "invitaciones")
-        console.log(isPlayerInCurrentTeam + "ya esta en un equipo")
-        console.log(hasSolitud + "riene una solicitud pendiente")
+        
         if(!hasInvitationPending && !isPlayerInCurrentTeam && !hasSolitud) {
             await db.from('invitaciones').upsert([
                 {
@@ -41,9 +38,7 @@ async function crear(req, res, db) {
 async function checkInvitation(id_jugador, id_equipo, db) {
     const data = await db.from('invitaciones').select('*').eq('id_jugador_invitado', id_jugador).eq('id_equipo', id_equipo);
     console.log("check invitation: " + data.data);
-//a chequear
-
-    if(data.data != null || data.data === "" || data.data.isEmpty()){
+    if(data.data == null || data.data === "" || data.data.length == 0){
         return false;
     }
     return true;

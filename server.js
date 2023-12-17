@@ -23,6 +23,7 @@ const jugadores = require('./controladores/jugador/jugadores');
 const turnos = require('./controladores/agenda/turnos');
 const turnosFecha = require('./controladores/agenda/turnos_fecha');
 const buscarEquipos = require('./controladores/busquedas/buscar_equipos');
+const perfilUpdate = require('./controladores/perfil/update');
 
 const bcrypt = require('bcrypt');
 const cors = require('cors'); //permite la conexion entre el be y fe de manera local
@@ -46,6 +47,8 @@ const invitacionEnviada = require('./controladores/invitaciones/enviadas');
 const solicitudUpdate = require('./controladores/solicitudes/update')
 const invitacionesUpdate = require('./controladores/invitaciones/update')
 const buscarEquiposInvitar = require('./controladores/busquedas/buscar_equipo_invitar')
+const deleteInvitaciones = require('./controladores/invitaciones/delete');
+
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -89,6 +92,10 @@ app.post('/registro', async (req, res)=>{
 
 app.post('/perfil', async (req, res) => {
   perfilEndpoint.perfilEndpoint(req, res, db, bcrypt)
+})
+
+app.put('/perfil/update/:id', async (req, res) => {
+  perfilUpdate.perfilUpdate(req, res, db)
 })
 
 app.post('/ingreso', async (req, res) => {
@@ -219,6 +226,10 @@ app.get('/invitaciones/mis-invitaciones/:id', async(req, res) => {
 
 app.post('/invitaciones/update', async(req, res) => {
   invitacionesUpdate.invitacionesUpdate(req, res, db)
+})
+
+app.delete('/invitaciones/borrar/:id_jugador/:id_equipo', async(req, res) => {
+  deleteInvitaciones.deleteInvitaciones(req, res, db)
 })
 
 //Mapa

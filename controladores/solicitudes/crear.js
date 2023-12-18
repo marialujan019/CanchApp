@@ -37,7 +37,7 @@ async function checkInvitation(id_jugador, id_equipo, db) {
     const data = await db.from('invitaciones').select('*').eq('id_jugador_invitado', id_jugador).eq('id_equipo', id_equipo).single();
     console.log("check invitation: " + data.data);
 //a chequear
-    if(data.data != null || data.data === "" || data.data.isEmpty()){
+    if(data.data == null || data.data === "" || data.data.length == 0){
         return false;
     }
     return true;

@@ -1,14 +1,12 @@
 async function buscarEquipos(req, res, db) {
     const data = req.params;
-    console.log(req.params)
     const id_jugador = parseInt(data.id_jugador);
-
-    console.log("jugador: " + id_jugador)
     // Obtener la lista de equipos
     const equipos = await db.from('equipo').select('*');
+    const equiposCapitan = equipos.data.filter((equipo) => equipo.capitan !== id_jugador);
 
     // Crear un array de promesas para obtener las solicitudes para cada equipo
-    const solicitudesPromises = equipos.data.map(async equipo => {
+    const solicitudesPromises = equiposCapitan.map(async equipo => {
         // Obtener la solicitud para el jugador y el equipo actual
         const solicitud = await db.from('solicitudes')
             .select('*')
@@ -47,6 +45,10 @@ async function buscarEquipos(req, res, db) {
 }
 
 function estadoJugadorAEquipo(id_jugador, equipos, solicitud) {
+    if(solicitud?.estado == "Aceptado") {
+        return "Aceptado"
+    }
+
     if(equipos.id_jugadores?.includes(id_jugador)) {
         return "Ya perteneces a este equipo"
     }

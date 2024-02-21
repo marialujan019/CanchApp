@@ -2,7 +2,6 @@ async function update(req, res, db) {
     const id = req.params.id;
     const updatedData = req.body;
 
-    console.log("nuevos datos: " + updatedData)
     const data = await db
       .from('cancha')
       .update(updatedData)

@@ -1,5 +1,4 @@
 async function jugadores(req, res, db){
-    console.log(req.params.id)
     const jugadores = await db.from('equipo').select('id_jugadores').eq('id_equipo', req.params.id)
     const jugadoresList = jugadores.data.map(objeto => objeto.id_jugadores);    
     const jugadoresDatos = await db.from('jugador').select('*').in('id_jug', [jugadoresList])

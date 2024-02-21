@@ -5,7 +5,6 @@ async function misEquipos(req, res, db){
         cant_jugadores: equipo.id_jugadores.length
       }));
 
-    console.log(equiposTransformados);
     return res.json(equiposTransformados);
 
 }

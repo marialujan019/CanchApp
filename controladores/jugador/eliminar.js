@@ -3,21 +3,17 @@ const { compareSync } = require("bcrypt");
 async function eliminarJugador(req, res, db){
     const id_jugador = req.params.id
     const id_equipo = req.params.equipo
-    console.log(id_jugador)
 
     const id_jugadores = await db.from('equipo')
     .select('id_jugadores')
     .eq('id_equipo', id_equipo)
     .single();
 
-    console.log(id_jugadores)
     // Extraer el array de id_jugadores del equipo
     const idJugadoresActuales = id_jugadores.data.id_jugadores || [];
-    console.log(idJugadoresActuales)
     // Filtrar el array para eliminar el idJugador
     const nuevosIdJugadores = idJugadoresActuales.filter(id => id !== parseInt(id_jugador));
 
-    console.log(nuevosIdJugadores)
 
     // Actualizar la fila con el nuevo array
     await db.from('equipo')
@@ -27,7 +23,6 @@ async function eliminarJugador(req, res, db){
     
       const jugadores = await db.from('equipo').select('id_jugadores').eq('id_equipo', req.params.equipo)
       const jugadoresList = jugadores.data.map(objeto => objeto.id_jugadores);    
-      console.log("Jugadires actuales: " + jugadoresList)
       const jugadoresDatos = await db.from('jugador').select('*').in('id_jug', [jugadoresList])
   
       const jugadoresConEdad = jugadoresDatos.data.map(jugador => ({

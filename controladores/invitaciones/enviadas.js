@@ -5,7 +5,6 @@ async function invitacionEnviada(req, res, db){
     const idEquipos = [...new Set(invitaciones.data.filter(item => item.id_equipo !== null).map(item => item.id_equipo))];
     const equipoData = await db.from('equipo').select('*').in('id_equipo', idEquipos);
     const idJugadores = [...new Set(invitaciones.data.filter(item => item.id_jugador_invitado !== null).map(item => item.id_jugador_invitado))];
-    console.log("JUGADOREEEEEEEEEES: " + idJugadores)
     const datosJugador = await db.from('jugador').select('*').in('id_jug', idJugadores);
 
     const invitacionesRecibidas = invitaciones.data.map(dato => ({

@@ -1,7 +1,6 @@
 async function crear(req, res, db) {
     try {
         const data = req.body;
-        console.log(data)
         const hasInvitationPending = await checkInvitation(data.id_jugador, data.id_equipo, db);
         const isPlayerInCurrentTeam = await checkPlayer(data.id_jugador, data.id_equipo, db);
         const hasSolitud = await checkPlayerSolicitud(data.id_jugador, data.id_equipo, db);

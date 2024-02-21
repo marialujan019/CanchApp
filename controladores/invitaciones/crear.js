@@ -1,12 +1,13 @@
 async function crear(req, res, db) {
     try {
         const data = req.body;
-        console.log(data)
-        const hasInvitationPending = await checkInvitation(data.id_jugador, data.id_equipo, db);
-        const isPlayerInCurrentTeam = await checkPlayer(data.id_jugador, data.id_equipo, db);
-        const hasSolitud = await checkPlayerSolicitud(data.id_jugador, data.id_equipo, db);
+        console.log("Invitaciones: " + data)
+        const hasInvitationPending = await checkInvitation(data.id_jugador, data.id_equipo, db); //true
+        const isPlayerInCurrentTeam = await checkPlayer(data.id_jugador, data.id_equipo, db); //false
+        const hasSolitud = await checkPlayerSolicitud(data.id_jugador, data.id_equipo, db); //false
         
         if(!hasInvitationPending && !isPlayerInCurrentTeam && !hasSolitud) {
+            console.log("crear solicitud: adentro")
             await db.from('invitaciones').upsert([
                 {
                   id_jugador_invitado: parseInt(data.id_jugador),
@@ -37,8 +38,9 @@ async function crear(req, res, db) {
 
 async function checkInvitation(id_jugador, id_equipo, db) {
     const data = await db.from('invitaciones').select('*').eq('id_jugador_invitado', id_jugador).eq('id_equipo', id_equipo);
-    console.log("check invitation: " + data.data);
+    console.log("check invitation: " + JSON.stringify(data.data[0]?.estado));
     if(data.data == null || data.data === "" || data.data.length == 0){
+        console.log("check invitation falseee")
         return false;
     }
     return true;
@@ -46,7 +48,7 @@ async function checkInvitation(id_jugador, id_equipo, db) {
 
 async function checkPlayer(id_jugador, id_equipo, db) {
     const data = await db.from('equipo').select('id_jugadores').eq('id_equipo', id_equipo);
-    console.log("check player: " +  data.data);
+    console.log("check player: " +  data);
     const jugadores = data.data[0].id_jugadores
     if(jugadores.includes(id_jugador)) {
         return true;

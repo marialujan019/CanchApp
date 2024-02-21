@@ -30,9 +30,7 @@ async function turnos(req, res, db){
       
       // Convertir el objeto organizado en un array
       const resultado = Object.values(datosOrganizados);
-      
-      console.log(resultado);
-      
+            
     return res.json(resultado);
 
 }

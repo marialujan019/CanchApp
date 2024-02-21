@@ -1,11 +1,7 @@
 async function buscarEquiposInvitar(req, res, db) {
     const data = req.params;
-    console.log(req.params)
     const id_jugador = parseInt(data.id_jugador);
     const id_capitan = parseInt(data.id_capitan);
-
-    console.log("jugador: " + id_jugador)
-    console.log("capitan: " + id_capitan)
 
     // Obtener la lista de equipos
     const equipos = await db.from('equipo').select('*');
@@ -32,7 +28,6 @@ async function buscarEquiposInvitar(req, res, db) {
     // Esperar a que todas las promesas se resuelvan
     const equiposTransformados = await Promise.all(solicitudesPromises);
     const equiposCapitan = equiposTransformados.filter(equipo => equipo.capitan === parseInt(id_capitan))
-    console.log(equiposCapitan)
     return res.json(equiposCapitan);
 }
 
@@ -55,8 +50,6 @@ function estadoJugadorAEquipo(id_jugador, equipos, solicitud) {
     if(equipos.id_jugadores?.includes(id_jugador)) {
         return "Ya perteneces a este equipo"
     }
-
-    console.log("solicitud: " + solicitud)
     
     return !(!solicitud?.estado || solicitud?.estado.trim() === "") ? solicitud.estado : "No enviado";
 }

@@ -21,7 +21,6 @@ async function crear(req, res, db) {
         .single();
 
 const idCancha = cancha?.id_cancha ?? null;
-  console.log("CANCHA:" + cancha)
       // Supabase devuelve el ID de la cancha en el objeto cancha
       res.status(200).json({Status: 'Respuesta ok', idCancha: idCancha });
     } catch (error) {

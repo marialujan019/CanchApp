@@ -60,7 +60,6 @@ async function insertarJugadorYLogin(data, hash, db, res) {
     if (jugadorError || loginError) {
       console.error('Error al insertar datos:', jugadorError || loginError);
     } else {
-      console.log('Datos insertados exitosamente en las tablas "jugador" y "login"');
       res.status(200).send({ "message": "Created"});
 
     }

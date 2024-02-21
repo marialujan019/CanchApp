@@ -4,14 +4,12 @@ async function historial(req, res, db){
     const equipos = await db.from('equipo').select('nombre_equipo, id_equipo').contains('id_jugadores', [req.params.id])
     const id_equipos = equipos.data.map(objeto => objeto.id_equipo);
 
-    console.log(equipos.data)
     const reservas = await db.from('reservas').select('id, id_agenda, id_equipo, estado').in('id_equipo', [id_equipos])
     const idAgendas = reservas.data
     .filter(reserva => reserva.estado === "confirmado")
     .map(reserva => reserva.id_agenda);
 
         
-    console.log(reservas.data)
     const agenda = await db.from('agenda').select('fecha, hora, id_complejo, id_cancha, id_equipo').in('id_agenda', idAgendas)
     
     const agendaData = agenda.data
@@ -42,10 +40,6 @@ async function historial(req, res, db){
         return res.json(reservasConNombres);
     })
     .catch(error => console.error(error));
-
-
-
-    console.log(agenda.data)
 
 }
 

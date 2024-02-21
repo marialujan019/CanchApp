@@ -48,7 +48,7 @@ const solicitudUpdate = require('./controladores/solicitudes/update')
 const invitacionesUpdate = require('./controladores/invitaciones/update')
 const buscarEquiposInvitar = require('./controladores/busquedas/buscar_equipo_invitar')
 const deleteInvitaciones = require('./controladores/invitaciones/delete');
-
+const deleteIdInvitaciones = require('./controladores/invitaciones/deleteId');
 const supabaseUrl = 'https://mspsbqmtjgzybpuvcdks.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zcHNicW10amd6eWJwdXZjZGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTY4OTU2MjgsImV4cCI6MjAxMjQ3MTYyOH0.72O8fZHpPqN-rMC5saX1lSO7wxOU_LjIDQUsJxsck5Y';
 
@@ -232,6 +232,10 @@ app.delete('/invitaciones/borrar/:id_jugador/:id_equipo', async(req, res) => {
   deleteInvitaciones.deleteInvitaciones(req, res, db)
 })
 
+app.delete('/invitaciones/delete/:id_invitaciones', async(req, res) => {
+  deleteIdInvitaciones.deleteIdInvitaciones(req, res, db)
+})
+
 //Mapa
 app.get('/popups', async(req, res) => {
   popups.popups(req, res, db)
@@ -260,4 +264,3 @@ app.post('/jugadores/:id/:equipo', async(req, res) => {
 })
 
 app.listen(3001)
-console.log('Server on port', 3000)

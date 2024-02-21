@@ -1,8 +1,6 @@
 async function solicitudEnviada(req, res, db) {
     const id_jugador = req.params.id;
 
-    console.log(id_jugador)
-
     const misSolicitudes = await db.from('solicitudes')
         .select('*')
         .eq('id_jugador', id_jugador)

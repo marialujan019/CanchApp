@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 async function ingresoEndpoint(req, res, db, bcrypt) {
   const { mail, pass } = req.body;
-  console.log(req.body)
   const { data, error } = await db.from('login').select('*').eq('mail', mail).single();
 
   if (!data) {
@@ -11,7 +10,6 @@ async function ingresoEndpoint(req, res, db, bcrypt) {
   const isValid = bcrypt.compareSync(pass, data.contrasena);
 
   if (isValid) {   
-    console.log(mail)
     var tipo = data.tipo
     const result = await db.from(tipo).select('*').eq('mail', mail).single();
 

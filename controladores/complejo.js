@@ -17,7 +17,6 @@ async function complejoEndpoint(req, res, bcrypt, db) {
             administrador.contrasena = hashedPassword;
             const complejoYaExiste = await complejoExiste(administrador.mail, db);
             if (complejoYaExiste) {
-              console.log('El complejo ya está registrado en la base de datos.');
               res.status(400).send({ "message": "El complejo ya esta registrado"}); // O lanzar un error, dependiendo de tus necesidades
             } else {
               try {
@@ -42,11 +41,8 @@ async function complejoEndpoint(req, res, bcrypt, db) {
                     }
                   ]);
                 
-                  console.log(administrador.mail)
 
                 const {data, errorAdmin2} = await db.from('administrador').select('*').eq('mail', administrador.mail).single();
-
-                console.log(data)
 
                 const {complejoData, errorComplejo} = await db.from("complejo").upsert([{
                   nombre_complejo: complejo.nombreComplejo,
@@ -62,7 +58,6 @@ async function complejoEndpoint(req, res, bcrypt, db) {
 
                 res.status(200).json({ "message": "Created", "data": data });
             } catch (error) {
-              console.log(error)
                 res.status(500).send({ message: http.STATUS_CODES[500] });
             }}
               

@@ -31,7 +31,6 @@ async function turnosFecha(req, res, db){
       return acc;
     }, {});
     
-    console.log(Object.values(datosOrganizados)[0]);
     
     return res.json(Object.values(datosOrganizados)[0]);     
 }

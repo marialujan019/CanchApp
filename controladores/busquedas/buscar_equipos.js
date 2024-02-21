@@ -52,8 +52,6 @@ function estadoJugadorAEquipo(id_jugador, equipos, solicitud) {
     if(equipos.id_jugadores?.includes(id_jugador)) {
         return "Ya perteneces a este equipo"
     }
-
-    console.log("solicitud: " + solicitud)
     
     return !(!solicitud?.estado || solicitud?.estado.trim() === "") ? solicitud.estado : "No enviado";
 }
